@@ -47,24 +47,56 @@ public class Blog {
     if(rN.procurarPalavrasProibidas(c.getConteudo())){
       return new Retorno<Boolean>(false,"Palavra proibida!");
     }
+    if(!rN.limiteCaracteres(c.getConteudo())){
+      return new Retorno<Boolean>(false,"Estourou o limite de 100 caracteres!");
+    }
     for(Postagem p: postagens){
       if(p.getAutor()==post.getAutor() && p.getDataPostagem()==post.getDataPostagem() && p.getConteudo()==post.getConteudo()){
         p.addComentario(c);
-        break;
+        return new Retorno<Boolean>(true,"Publicado com sucesso!");
       }
     }
-    return new Retorno<Boolean>(true,"Publicado com sucesso!");
+    return new Retorno<Boolean>(false,"Publicação não encontrada!");
   }
 
   private Retorno<Boolean> removePostagem(Postagem p) {
     if(!(userAtual.ehAdmin() || p.getAutor().getId()==userAtual.getId())){
       return new Retorno<Boolean>(false,"Não possui permição para exclusão dessa publicação");
     }
-    for(int i=0; i<=postagens.size(); i++){
-     
+    for(int i=0; i<=postagens.size()-1; i++){
+      Postagem postAux = postagens.get(i);
+      if(postAux.getAutor()==p.getAutor() && postAux.getDataPostagem()==p.getDataPostagem() && postAux.getConteudo()==p.getConteudo()){
+        postagens.remove(i);
+        return new Retorno<Boolean>(true,"Publicação removida com sucesso!");
+      }
     }
-    //remove postagem
+    return new Retorno<Boolean>(false,"Publicação não encontrada!");
   }
+
+  private Retorno<Boolean> removeComentario(Postagem p, Comentario c) {
+    if(!(userAtual.ehAdmin() || c.getAutor().getId()==userAtual.getId())){
+      return new Retorno<Boolean>(false,"Não possui permição para exclusão desse comentário");
+    }
+    for(int i=0; i<=postagens.size()-1; i++){
+      Postagem postAux = postagens.get(i);
+      if(postAux.getAutor()==p.getAutor() && postAux.getDataPostagem()==p.getDataPostagem() && postAux.getConteudo()==p.getConteudo()){
+        postagens.remove(i);
+        return new Retorno<Boolean>(true,"Publicação removida com sucesso!");
+      }
+    }
+    return new Retorno<Boolean>(false,"Publicação não encontrada!");
+  }
+
+  private int indexPostagem(Postagem p){
+    for(int i=0; i<=postagens.size()-1; i++){
+      Postagem postAux = postagens.get(i);
+      if(postAux.getAutor()==p.getAutor() && postAux.getDataPostagem()==p.getDataPostagem() && postAux.getConteudo()==p.getConteudo()){
+        return i;
+      }
+    }
+    return -1;
+  }
+
 
   private void escreveCSV(){
     ArrayList<Postagem> postagensUser = buscaPostagens(userAtual);
@@ -120,5 +152,30 @@ public class Blog {
       }
     }
     return comentariosPalavraChave;
+  }
+
+  private void listaPostagens(){
+    for(int i=postagens.size()-1;i>=0;i--){
+      System.out.println(postagens.get(i).getDataPostagem());
+      System.out.println("\n");
+      System.out.println(postagens.get(i).getAutor().getNome()+"("+ postagens.get(i).getAutor().getId() +")");
+      System.out.println("\n");
+      System.out.println(postagens.get(i).getConteudo());
+      System.out.println("\n");
+      for(int j=0; j<=postagens.get(i).getTags().size()-1; j++){
+        System.out.println(postagens.get(i).getTags().get(j)+ ", ");
+      }
+      if(!postagens.get(i).getComentarios().isEmpty()){
+        System.out.println("\n ------ Comentários ------");
+        for(int h=postagens.get(i).getComentarios().size()-1;h>=0;h--){
+          System.out.println(postagens.get(i).getComentarios().get(h).getDataPostagem());
+          System.out.println("\n");
+          System.out.println(postagens.get(i).getComentarios().get(h).getAutor().getNome()+"("+ postagens.get(i).getComentarios().get(h).getAutor().getId() +")");
+          System.out.println("\n");
+          System.out.println(postagens.get(i).getComentarios().get(h).getConteudo());
+          System.out.println("\n");
+        }
+      }
+    }
   }
 }

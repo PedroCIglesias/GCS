@@ -42,4 +42,10 @@ public class RegrasNegocio extends Blog{
 		}
 		return false;
 	}
+	public boolean limiteCaracteres(String conteudo){
+		if(conteudo.length()>100){
+			return false;
+		}
+		return true;
+	}
 }
