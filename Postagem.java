@@ -22,11 +22,11 @@ public class Postagem {
   public Date getDataPostagem() {return dataPostagem;}
   public ArrayList<String> getTags() {return tags;}
 
-  public boolean addComentario(Comentario comentario){
-    // adiciona comentario
+  public void addComentario(Comentario comentario){
+    comentarios.add(comentario);
   }
 
-  public boolean removeComentario(int posicao, Usuario usuarioAtual) {
+  public void removeComentario(int posicao, Usuario usuarioAtual) {
     //remove comentário
   }
 
