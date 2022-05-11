@@ -13,7 +13,7 @@ public class Usuario {
   public int getId() {return id;}
   public String getNome() {return nome;}
 
-  public boolean isAdministrador(){
+  public boolean ehAdmin(){
     return this.administrador;
   }
 }
